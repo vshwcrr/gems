@@ -1,7 +1,7 @@
 let game;
 let gameOptions = {
     fieldSize: 4,
-    gemColors: 4,
+    gemColors: 3,
     gemSize: 100,
     swapSpeed: 200,
     fallSpeed: 100,
