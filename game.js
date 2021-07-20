@@ -8,7 +8,7 @@ let gameOptions = {
     destroySpeed: 200
 }
 const HORIZONTAL = 1;
-const VERTICAL = 20;
+const VERTICAL = 2;
 window.onload = function() {
     let gameConfig = {
         width: 700,
@@ -59,6 +59,7 @@ class playGame extends Phaser.Scene{
                 } while(this.isMatch(i, j));
             }
         }
+        this.checkMove();
     }
     isMatch(row, col){
          return this.isHorizontalMatch(row, col) || this.isVerticalMatch(row, col);
@@ -168,7 +169,6 @@ class playGame extends Phaser.Scene{
         this.gameArray[gem2Row][gem2Col].gemSprite = fromSprite;
         this.tweenGem(gem1, gem2, swapBack);
         this.tweenGem(gem2, gem1, swapBack);
-        consol
     }
     tweenGem(gem1, gem2, swapBack){
         let row = this.getGemRow(gem1);
@@ -357,6 +357,7 @@ class playGame extends Phaser.Scene{
                 }
             }
         }
+        this.checkMove();
     }
     holesInCol(col){
         var result = 0;
@@ -366,6 +367,45 @@ class playGame extends Phaser.Scene{
             }
         }
         return result;
+    }
+    checkMove(){
+        var can_move = false;
+        for(let i = 0; i < (gameOptions.fieldSize); i++){
+            for(let j = 0; j < (gameOptions.fieldSize); j++){
+                if (j < (gameOptions.fieldSize - 1))
+                {
+                    this.virtualSwapGems(i,j,i,j+1);
+                    if (this.matchInBoard()) {
+                        can_move = true;
+                    }
+                    this.virtualSwapGems(i,j,i,j+1);
+                }
+
+                if (i < (gameOptions.fieldSize - 1)) {
+                    this.virtualSwapGems(i,j,i+1,j);
+                    if (this.matchInBoard()) {
+                        can_move = true;
+                    }
+                    this.virtualSwapGems(i,j,i+1,j);
+                }
+                if (can_move) {
+                    i = j = gameOptions.fieldSize;
+                }
+            }
+        }
+        if (!can_move) {
+            alert('NEED SHUFFLE');
+        }
+    }
+    virtualSwapGems(x, y, x1, y1){
+        var tmp = {};
+        tmp.gemColor = this.gameArray[x][y].gemColor;
+        tmp.gemSprite = this.gameArray[x][y].gemSprite;
+
+        this.gameArray[x][y].gemColor = this.gameArray[x1][y1].gemColor;
+        this.gameArray[x][y].gemSprite = this.gameArray[x1][y1].gemSprite;
+        this.gameArray[x1][y1].gemColor = tmp.gemColor;
+        this.gameArray[x1][y1].gemSprite = tmp.gemSprite;
     }
 }function resize() {
     var canvas = document.querySelector("canvas");
