@@ -2,23 +2,120 @@
 <html>
 	<head>
         <style type = "text/css">
-            body{
-                background: #000000;
-                padding: 0px;
-                margin: 0px;
+
+            * {
+                box-sizing: border-box;
             }
-            canvas{
-                display:block;
+
+            #game_wrapper {
+                border: 16px ridge gold;
+                position: relative;
+                max-height: 100%;
+                max-width: 100%;
+                height: auto;
+                width: 100%;
                 margin: 0;
+                padding: 5px;
+                transition: all .3s;
+            }
+
+            #bg {
                 position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
+                z-index: -1;
+                top: 0;
+                left: 0;
+            }
+
+            .spin {
+                animation: 1s spinHole;
+            }
+
+            .slideUp {
+                animation: .5s slideUpAnimation;
+            }
+
+            .final_expl {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                background-repeat: no-repeat;
+                background-size: contain!important;
+            }
+
+            .exp {
+                background: url('./assets/sprites/expl_1.png');
+                animation: .3s explode infinite;
+            }
+
+            @keyframes spinHole {
+                0% {
+                    transform: rotate(0deg) scale(1);
+                }
+                50% {
+                    transform: rotate(360deg) scale(0);
+                }
+
+                100% {
+                    transform: rotate(0deg) scale(1);
+                }
+            }
+
+            @keyframes slideUpAnimation {
+                from {
+                    opacity: 1;
+                }
+
+                to {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+            }
+
+            @keyframes explode {
+                0% {
+                    background: url('./assets/sprites/expl_1.png');
+                }
+                33% {
+                    background: url('./assets/sprites/expl_2.png');
+                }
+                66% {
+                    background: url('./assets/sprites/expl_3.png');
+                }
+                100% {
+                    background: url('./assets/sprites/expl_4.png');
+                }
             }
         </style>
         <script src = "phaser.min.js"></script>
         <script src = "game.js"></script>
     </head>
 	<body>
+        <div id="game_wrapper">
+            <div id="bg"></div>
+        </div>
+
+        <script>
+            const gw = document.querySelector('#game_wrapper');
+
+            const bg_c = document.createElement("canvas");
+            document.querySelector('#bg').insertAdjacentElement("afterbegin", bg_c);
+
+            function drawBg(canvas, cells, gemSize) {
+                canvas.height = canvas.width = cells * gemSize;
+                const ctx = canvas.getContext("2d");
+
+                for (let i = 0; i < cells; i++) {
+                    for (let j = 0; j < cells; j++) {
+                        ctx.fillStyle = (i + j) & 1 ? "#200a3b" : "#321557";
+                        ctx.fillRect(j * gemSize, i * gemSize, gemSize, gemSize);
+                    }
+
+                }
+            }
+
+            drawBg(bg_c, 4, 60);
+        </script>
 	</body>
 </html>
